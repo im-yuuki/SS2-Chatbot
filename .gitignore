@@ -1,0 +1,7 @@
+# Exclude files & folders
+**/__pycache__
+.venv/
+.env
+
+# Exclude binaries
+**/*.pyc
