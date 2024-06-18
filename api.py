@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Optional
 
 from dotenv import load_dotenv
 from os import getenv
@@ -34,8 +35,12 @@ class User(BaseModel):
     username: str
     password: str
 
+class TrainData(BaseModel):
+    text: str
+
 class Message(BaseModel):
     text: str
+    chat_id: Optional[str] = None
     
 # Bot class
 class BotAbstract(ABC):
@@ -43,7 +48,7 @@ class BotAbstract(ABC):
     embedding = None
     vector_store = None
     
-    async def add_data(self, message: Message):
+    async def add_data(self, message: TrainData):
         await self.vector_store.aadd_texts([message.text])
 
     async def chat(self, message: Message):
@@ -115,7 +120,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @app.post("/add_data", dependencies=[Depends(verify_token)])
-async def add_data(message: Message):
+async def add_data(message: TrainData):
     try:
         await bot.add_data(message)
         return {"status": "success"}
